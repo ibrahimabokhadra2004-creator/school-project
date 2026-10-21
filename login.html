@@ -160,43 +160,40 @@
 
 </main>
 <script>
-  const form = document.getElementById('loginForm') || document.querySelector('form');
-  
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const identifierInput = document.querySelector('input[type="text"]') || document.querySelector('input[type="email"]') || document.querySelector('input');
-      const passwordInput = document.querySelector('input[type="password"]');
+    // جلب قيم البريد وكلمة المرور من الحقول مباشرة
+    const emailInput = document.querySelector('input[type="text"], input[type="email"]');
+    const passwordInput = document.querySelector('input[type="password"]');
 
-      const identifier = identifierInput ? identifierInput.value : '';
-      const password = passwordInput ? passwordInput.value : '';
+    const email = emailInput ? emailInput.value : '';
+    const password = passwordInput ? passwordInput.value : '';
 
-      const pageElement = document.getElementById('page');
-      let role = pageElement ? pageElement.getAttribute('data-role') : 'student';
-
-      try {
+    try {
         const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ role, identifier, password })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
         });
 
         const data = await response.json();
-if (response.ok) {
-          alert('تم تسجيل الدخول بنجاح! 🚀');
-          window.location.href = 'dashboard.html';
+
+        if (response.ok) {
+            alert('تم تسجيل الدخول بنجاح 🎉');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = '/dashboard.html';
         } else {
-          alert(data.error || 'بيانات الدخول غير صحيحة');
+            alert(data.error || 'حدث خطأ أثناء تسجيل الدخول');
         }
-      } catch (err) {
+    } catch (err) {
         console.error(err);
-        alert('حدث خطأ في الاتصال بالسيرفر');
-      }
-    });
-  }
+        alert('خطأ في الاتصال بالخادم');
+    }
+});
 </script>
 </body>
 </html>

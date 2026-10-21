@@ -5,39 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم</title>
     <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 40px;
-            text-align: center;
-        }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        h1 { color: #2c3e50; }
-        p { color: #7f8c8d; font-size: 18px; }
-        .btn-logout {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #e74c3c;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-        }
+        body { font-family: Tahoma, sans-serif; background: #f4f7f6; margin: 0; padding: 40px; text-align: center; }
+        .card { background: white; padding: 40px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
+        h1 { color: #333; margin-bottom: 10px; }
+        p { color: #666; font-size: 18px; margin-bottom: 25px; }
+        .user-name { color: #007bff; font-weight: bold; }
+        .logout-btn { background: #dc3545; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .logout-btn:hover { background: #bd2130; }
     </style>
 </head>
 <body>
+
     <div class="card">
         <h1>مرحباً بك في لوحة التحكم! 👋</h1>
-        <p>تم تسجيل دخولك بنجاح إلى النظام.</p>
-        <a href="/login.html" class="btn-logout">تسجيل الخروج</a>
+        <p>أهلاً بك يا <span id="userName" class="user-name">...</span></p>
+        <p style="font-size: 14px; color: #28a745;">تم تسجيل دخولك بنجاح إلى النظام.</p>
+        
+        <button id="logoutBtn" class="logout-btn">تسجيل الخروج</button>
     </div>
+
+    <script>
+        // 1. التحقق من وجود التوكن (حماية الصفحة)
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        // لو مفيش توكن، يرجع المستخدم لصفحة تسجيل الدخول فوراً
+        if (!token) {
+            alert('عذراً، يجب تسجيل الدخول أولاً!');
+            window.location.href = '/login.html';
+        } else {
+            // عرض اسم المستخدم في الصفحة
+            document.getElementById('userName').textContent = user.name || 'مستخدم';
+        }
+
+        // 2. تفعيل زر تسجيل الخروج
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            // مسح التوكن وبيانات المستخدم من المتصفح
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            alert('تم تسجيل الخروج بنجاح');
+            // التوجيه لصفحة تسجيل الدخول
+            window.location.href = '/login.html';
+        });
+    </script>
+
 </body>
 </html>
